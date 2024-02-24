@@ -1,11 +1,19 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const votePollFactory = await ethers.deployContract("VotePollFactory");
+  const votePollFactoryContract = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const VOTEPOLLFACTORY = await ethers.getContractAt(
+    "IVotePollFactory",
+    votePollFactoryContract
+  );
 
-  await votePollFactory.waitForDeployment();
+  const createVoteTx = await VOTEPOLLFACTORY.createVotePoll();
 
-  console.log(`Contract deployed to ${votePollFactory.target}`);
+  await createVoteTx.wait();
+
+  const clones = await VOTEPOLLFACTORY.getVotePollClones();
+
+  console.log(clones);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
